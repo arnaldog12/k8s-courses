@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deployment
+  labels:
+    app: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:5.0
+        ports:
+        - containerPort: 27017 # the port exposed by the container
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret # mongo-secret.metadata.name
+              key: mongo-user # mongo-secret.data
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret # mongo-secret.metadata.name
+              key: mongo-password # mongo-secret.data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service # matches mongo-config.data.mongo-url
+spec:
+  # type: ClusterIP # default for internal service
+  selector:
+    app: mongo # match Deployment.spec.template.metadata.labels
+  ports:
+    - protocol: TCP
+      port: 27017 # can by any port (best practice to be equal to targetPort)
+      targetPort: 27017 # port of the pod (must match containerPort)
