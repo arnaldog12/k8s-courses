@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-pod
+spec:
+  containers:
+  - name: liveness-container-test
+    image: busybox
+    args:
+      - /bin/sh
+      - -c
+      - touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; sleep 600
+
+    livenessProbe:
+      exec:
+        command:
+          - cat
+          - /tmp/healthy
+      initialDelaySeconds: 5 # espera 5s pra rodar o comando
+      periodSeconds: 5 # roda o comando a cada 5s
+      failureThreshold: 3 # se falhar 3x, reinicia o container
