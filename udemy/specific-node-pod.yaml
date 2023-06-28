@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: specific-node-pod
+spec:
+  containers:
+    - name: redis
+      image: redis
+
+  # atribui um pod em um node especifico
+  # nodeName: minikube-m03
+
+  # atribui um pod em nodes com essa label
+  nodeSelector:
+    disktype: ssd
