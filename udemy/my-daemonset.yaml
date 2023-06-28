@@ -16,6 +16,13 @@ spec:
       containers:
       - name: my-container-nginx
         image: nginx
+
+      # ativa o daemonset somente nos nodes com a label abaixo
+      # nodeSelector: 
+        # disktype: ssd
+      
+      # ativa o daemonset em um node com nome especifico
+      nodeName: minikube-m03
   selector:
     matchLabels:
       apps: my-app
