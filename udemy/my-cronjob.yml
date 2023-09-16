@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: my-cronjob
+spec:
+  schedule: "* * * * *"  # every minute 
+  failedJobsHistoryLimit: 5  # default = 1
+  successfulJobsHistoryLimit: 10  # default = 3
+  jobTemplate:
+    spec:
+      parallelism: 5
+      completions: 10
+      completionMode: "Indexed"  # adiciona um indice no nome do pod
+      template:
+        spec:
+          containers:
+            - name: my-container-busybox
+              image: busybox
+              command: 
+                - "bin/sh"
+                - "-c"
+                - "for i in 1 2; do echo Lucky number $i = $((1 + RANDOM % 70)); done"
+          restartPolicy: Never
